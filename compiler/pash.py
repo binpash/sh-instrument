@@ -6,11 +6,60 @@ from datetime import datetime
 import config
 from config import log, ptempfile, logging_prefix, print_time_delta
 from cli import RunnerParser, PreprocessorParser
-import transformation_options
 import ast_to_ast
 from parse import parse_shell_to_asts, from_ast_objects_to_shell
+from ast_util import string_to_argument, make_command
+from shasta.json_to_ast import to_ast_node
 
 LOGGING_PREFIX = "PaSh: "
+
+
+class TransformationState:
+    """Manages state during AST transformation and region replacement"""
+
+    def __init__(self):
+        self._node_counter = 0
+
+    def get_next_id(self):
+        new_id = self._node_counter
+        self._node_counter += 1
+        return new_id
+
+    def get_current_id(self):
+        return self._node_counter - 1
+
+    def get_number_of_ids(self):
+        return self._node_counter
+
+    def replace_df_region(self, asts, disable_parallel_pipelines=False, ast_text=None):
+        """Replace a dataflow region with a call to jit.sh runtime"""
+        # Create sequential script file
+        sequential_script_file_name = ptempfile()
+
+        # Get shell text from ASTs
+        if ast_text is None:
+            text_to_output = from_ast_objects_to_shell(asts)
+        else:
+            text_to_output = ast_text
+
+        # Write script to file
+        with open(sequential_script_file_name, "w", encoding="utf-8") as script_file:
+            script_file.write(text_to_output)
+
+        # Create AST node that calls jit.sh
+        # Generates: JIT_INPUT=<file> JIT_SCRIPT_TO_EXECUTE=<file> source jit.sh
+        assignments = [
+            ["JIT_INPUT", string_to_argument(sequential_script_file_name)],
+            ["JIT_SCRIPT_TO_EXECUTE", string_to_argument(sequential_script_file_name)]
+        ]
+
+        arguments = [
+            string_to_argument("source"),
+            string_to_argument(config.RUNTIME_EXECUTABLE),
+        ]
+        runtime_node = make_command(arguments, assignments=assignments)
+
+        return to_ast_node(runtime_node)
 
 
 @logging_prefix(LOGGING_PREFIX)
@@ -75,8 +124,8 @@ def preprocess(input_script_path, args):
 
 def preprocess_asts(ast_objects, args):
     """Transform AST objects by replacing regions with JIT runtime calls"""
-    trans_options = transformation_options.TransformationState()
-    preprocessed_asts = ast_to_ast.replace_ast_regions(ast_objects, trans_options)
+    trans_state = TransformationState()
+    preprocessed_asts = ast_to_ast.replace_ast_regions(ast_objects, trans_state)
     return preprocessed_asts
 
 

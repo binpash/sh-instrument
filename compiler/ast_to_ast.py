@@ -13,10 +13,9 @@ The PaSh runtime then deserializes the(m, compiles them (if safe) and optimizes 
 
 from ast_util import *
 from preprocess_ast_cases import preprocess_node
-from transformation_options import AbstractTransformationState
 
 
-def replace_ast_regions(ast_objects, trans_options: AbstractTransformationState):
+def replace_ast_regions(ast_objects, trans_options):
     """
     Replace candidate dataflow AST regions with calls to PaSh's runtime.
     """

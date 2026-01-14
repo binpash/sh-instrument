@@ -1,12 +1,11 @@
 import copy
 
 from ast_util import *
-from transformation_options import AbstractTransformationState
 from shasta.ast_node import AstNode
 
 def preprocess_node(
     ast_node: AstNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool,
 ) -> PreprocessedAST:
     """
@@ -37,7 +36,7 @@ def preprocess_node(
 ## It is called by constructs that cannot be included in a dataflow region.
 def preprocess_close_node(
     ast_node: AstNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     preprocessed_ast_object = preprocess_node(
@@ -81,7 +80,7 @@ def preprocess_close_node(
 
 def preprocess_node_pipe(
     ast_node: PipeNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     ## A pipeline is *always* a candidate dataflow region.
@@ -105,7 +104,7 @@ def preprocess_node_pipe(
 ## TODO: Complete this
 def preprocess_node_command(
     ast_node: CommandNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     ## TODO: Preprocess the internals of the pipe to allow
@@ -139,7 +138,7 @@ def preprocess_node_command(
 ## TODO: It might be possible to actually not close the inner node but rather apply the redirections on it
 def preprocess_node_redir(
     ast_node: RedirNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     preprocessed_node, something_replaced = preprocess_close_node(
@@ -159,7 +158,7 @@ def preprocess_node_redir(
 ## TODO: Is that correct? Also, this should probably affect `semi`, `and`, and `or`
 def preprocess_node_background(
     ast_node: BackgroundNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     ## A background node is *always* a candidate dataflow region.
@@ -182,7 +181,7 @@ def preprocess_node_background(
 ## FIXME: This might not just be suboptimal, but also wrong.
 def preprocess_node_subshell(
     ast_node: SubshellNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     preprocessed_body, something_replaced = preprocess_close_node(
@@ -206,7 +205,7 @@ def preprocess_node_subshell(
 ##       We have to find a way to improve that.
 def preprocess_node_for(
     ast_node: ForNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     ## Preprocess the loop body
@@ -230,7 +229,7 @@ def preprocess_node_for(
 
 def preprocess_node_while(
     ast_node: WhileNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     preprocessed_test, sth_replaced_test = preprocess_close_node(
@@ -256,7 +255,7 @@ def preprocess_node_while(
 ## This is the same as the one for `For`
 def preprocess_node_defun(
     ast_node: DefunNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     ## TODO: For now we don't want to compile function bodies
@@ -275,7 +274,7 @@ def preprocess_node_defun(
 ## TODO: If the preprocessed is not maximal we actually need to combine it with the one on the right.
 def preprocess_node_semi(
     ast_node: SemiNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     # preprocessed_left, should_replace_whole_ast, is_non_maximal = preprocess_node(ast_node.left, irFileGen, config)
@@ -304,7 +303,7 @@ def preprocess_node_semi(
 ##       since we need its exit code.
 def preprocess_node_and(
     ast_node: AndNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     # preprocessed_left, should_replace_whole_ast, is_non_maximal = preprocess_node(ast_node.left, irFileGen, config)
@@ -329,7 +328,7 @@ def preprocess_node_and(
 
 def preprocess_node_or(
     ast_node: OrNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     # preprocessed_left, should_replace_whole_ast, is_non_maximal = preprocess_node(ast_node.left, irFileGen, config)
@@ -354,7 +353,7 @@ def preprocess_node_or(
 
 def preprocess_node_not(
     ast_node: NotNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     # preprocessed_left, should_replace_whole_ast, is_non_maximal = preprocess_node(ast_node.left)
@@ -374,7 +373,7 @@ def preprocess_node_not(
 
 def preprocess_node_if(
     ast_node: IfNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     # preprocessed_left, should_replace_whole_ast, is_non_maximal = preprocess_node(ast_node.left, irFileGen, config)
@@ -402,7 +401,7 @@ def preprocess_node_if(
 
 
 def preprocess_case(
-    case, trans_options: AbstractTransformationState, last_object: bool
+    case, trans_options, last_object: bool
 ):
     preprocessed_body, sth_replaced = preprocess_close_node(
         case["cbody"], trans_options, last_object=last_object
@@ -413,7 +412,7 @@ def preprocess_case(
 
 def preprocess_node_case(
     ast_node: CaseNode,
-    trans_options: AbstractTransformationState,
+    trans_options,
     last_object: bool = False,
 ):
     preprocessed_cases_replaced = [
