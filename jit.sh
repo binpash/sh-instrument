@@ -16,7 +16,7 @@
 ## (7) Restore final state before exit
 
 ## Set runtime directories
-export RUNTIME_DIR="${RUNTIME_DIR:-$PASH_TOP/compiler/orchestrator_runtime}"
+export RUNTIME_DIR="${RUNTIME_DIR:-$PASH_TOP/runtime}"
 export RUNTIME_LIBRARY_DIR="${RUNTIME_LIBRARY_DIR:-$PASH_TOP/runtime/}"
 
 ## Initialize logging functions
