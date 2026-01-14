@@ -218,9 +218,9 @@ if [ "$preprocess_only" = true ]; then
     exit 0
 fi
 
-# Step 2: Call runner.py to execute the preprocessed script
+# Step 2: Call runner.sh to execute the preprocessed script
 __jit_redir_all_output echo "PaSh: Calling runner..."
-"$PYTHON_VENV" "$PASH_TOP/runner.py" \
+"$PASH_TOP/runner.sh" \
     "$preprocessed_output" \
     "$shell_name" \
     "${script_args[@]}" \

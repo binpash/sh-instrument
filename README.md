@@ -6,7 +6,7 @@ A shell script instrumentation engine that can preprocess a script, stub out fra
 It includes a [preprocessor](/preprocessor/), a script runner that behaves like a shell, and a [just-in-time engine](/jit.sh).
 
 TODOs:
-- Make the runner its own repo and PyPI (or simplify into just a bash call)
+- Make the runner its own repo 
 - Make the preprocessor its own repo and PyPI
 - Use these in PaSh too
 - Add CI
