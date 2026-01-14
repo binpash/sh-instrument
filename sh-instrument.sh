@@ -2,9 +2,16 @@
 
 export PASH_TOP=${PASH_TOP:-${BASH_SOURCE%/*}}
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib/"
-export PYTHONPATH="${PASH_TOP}/python_pkgs/:${PYTHONPATH}"
 export RUNTIME_DIR="${RUNTIME_DIR:-$PASH_TOP/runtime}"
 export RUNTIME_LIBRARY_DIR="${RUNTIME_LIBRARY_DIR:-$PASH_TOP/runtime/}"
+
+# Use Python from virtual environment
+PYTHON_VENV="$PASH_TOP/python_pkgs/bin/python"
+if [ ! -f "$PYTHON_VENV" ]; then
+    echo "Error: Python virtual environment not found at $PYTHON_VENV" >&2
+    echo "Please run setup.sh first." >&2
+    exit 1
+fi
 
 trap kill_all SIGTERM SIGINT
 kill_all() {
@@ -97,4 +104,4 @@ export -f __jit_redir_all_output
 export -f __jit_redir_all_output_always_execute
 
 umask "$old_umask"
-PASH_FROM_SH="sh-instrument.sh" python3 -S "$PASH_TOP/preprocessor/preprocess.py" "$@"
+PASH_FROM_SH="sh-instrument.sh" "$PYTHON_VENV" "$PASH_TOP/preprocessor/preprocess.py" "$@"

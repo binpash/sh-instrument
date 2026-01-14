@@ -8,5 +8,4 @@ It includes a [preprocessor](/preprocessor/) and a [just-in-time engine](/jit.sh
 TODOs:
 - Separate the preprocessor from the runner python script
 - The specific should become its own library
-- Fix the installation
 - Add CI
