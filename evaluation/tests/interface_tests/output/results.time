@@ -1,0 +1,65 @@
+group,Bash,Pash-DRY_COMP
+test1,0.002,0.100	0.084
+test2,0.001,0.082	0.081
+test3,0.002,0.075	0.073
+test4,0.001,0.089	0.092
+test5,0.002,0.074	0.072
+test6,0.001,0.080	0.084
+test8,0.001,0.078	0.078
+test9,0.001,0.080	0.079
+exit_error.sh, line 1, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 1, /dev/null/abc, Not a directory	incomplete-arith.sh, line 3, unexpected EOF while looking for matching `)'
+exit_error.sh, line 2, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 5, /dev/null/abc, Not a directory	0.064
+exit_error.sh, line 3, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 17, /dev/null/abc, Not a directory	0.081
+exit_error.sh, line 4, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 21, /dev/null/abc, Not a directory	0.081
+exit_error.sh, line 5, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 25, /dev/null/abc, Not a directory	/tmp/pash_KSeviOV/tmpyjdd6yk7, line 4, var1, readonly variable
+exit_error.sh, line 6, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 29, /dev/null/abc, Not a directory	/tmp/pash_KSeviOV/tmpyjdd6yk7, line 6, var2, readonly variable
+exit_error.sh, line 7, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 33, /dev/null/abc, Not a directory	/tmp/pash_KSeviOV/tmpfxi70eey, line 1, unset, var1, cannot unset, readonly variable
+exit_error.sh, line 8, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpmasgcrhm, line 36, /dev/null/abc, Not a directory	/tmp/pash_KSeviOV/tmpcouhic0p, line 1, unset, var2, cannot unset, readonly variable
+exit_error.sh, line 9, /dev/null/abc, Not a directory,/tmp/pash_iU1g1ic/tmpqepflo0p, line 1, /dev/null/abc, Not a directory	0.105
+exit_error.sh, line 10, name_of_a_command_that_will_not_be_found, command not found,/tmp/pash_iU1g1ic/tmpo_7hr1tj, line 1, name_of_a_command_that_will_not_be_found, command not found	/tmp/pash_XQRmfa0/tmptv1aqfev, line 4, var1, readonly variable
+test10,0.022,0.272	/tmp/pash_XQRmfa0/tmptv1aqfev, line 6, var2, readonly variable
+incomplete-arith.sh, line 3, unexpected EOF while looking for matching `)',sh, 11, Syntax error, Missing '))'	/tmp/pash_XQRmfa0/tmp5dqd4_xh, line 1, unset, var1, cannot unset, readonly variable
+test11,0.001,0.067	/tmp/pash_XQRmfa0/tmp89oonb_t, line 1, unset, var2, cannot unset, readonly variable
+test12,0.003,0.084	0.122
+test13,0.002,0.078	0.103
+readonly.sh, line 3, var1, readonly variable,/tmp/pash_g0slJDq/tmpanreg6xp, line 4, var1, readonly variable	0.100
+readonly.sh, line 4, var2, readonly variable,/tmp/pash_g0slJDq/tmpanreg6xp, line 6, var2, readonly variable	0.117
+readonly.sh, line 6, unset, var1, cannot unset, readonly variable,/tmp/pash_g0slJDq/tmpu_k2sf67, line 1, unset, var1, cannot unset, readonly variable	0.115
+readonly.sh, line 7, unset, var2, cannot unset, readonly variable,/tmp/pash_g0slJDq/tmp64ost73d, line 1, unset, var2, cannot unset, readonly variable	0.301
+test14,0.001,0.098	0.294
+readonly.sh, line 3, var1, readonly variable,/tmp/pash_rvPPU36/tmploizi3so, line 4, var1, readonly variable	0.259
+readonly.sh, line 4, var2, readonly variable,/tmp/pash_rvPPU36/tmploizi3so, line 6, var2, readonly variable	0.170
+readonly.sh, line 6, unset, var1, cannot unset, readonly variable,/tmp/pash_rvPPU36/tmpc2io5w7m, line 1, unset, var1, cannot unset, readonly variable	0.343
+readonly.sh, line 7, unset, var2, cannot unset, readonly variable,/tmp/pash_rvPPU36/tmpuoiydq9l, line 1, unset, var2, cannot unset, readonly variable	0.145
+test15,0.001,0.111	0.140
+test16,0.002,0.092	0.158
+test17,0.002,0.094	0.179
+test18,0.003,0.122	0.145
+test_set,0.004,0.110	0.176
+test_set_e,0.002,0.270	0.165
+test_redirect,0.003,0.259	/tmp/pash_FoKXG3r/tmpnvyglc8m, line 1, no.such.file, No such file or directory
+test_unparsing,0.010,0.262	0.148
+test_set_e_2,0.004,0.174	0.128
+test_set_e_3,0.003,0.385	/tmp/pash_6UyW59Q/tmp88rdwj4u, line 1, foobar, unbound variable
+test_new_line_in_var,0.005,0.150	0.163
+test_cmd_sbst,0.002,0.141	/tmp/pash_RakbtUt/tmpys3v68jp, line 1, $1, unbound variable
+test_cmd_sbst2,0.004,0.157	0.136
+test_exec_redirections,0.007,0.172	0.138
+test_cat_hyphen,0.006,0.151	0.154
+test_trap,0.002,0.165	0.128
+test_set-dash,0.005,0.165	0.130
+cat-redir-fail.sh, line 1, no.such.file, No such file or directory,/tmp/pash_P6pqBSH/tmpwcdiz21b, line 1, no.such.file, No such file or directory	0.207
+test_cat_redir_fail,0.003,0.135	0.159
+test_umask,0.002,0.125	0.147
+expand-u.sh, line 3, foobar, unbound variable,/tmp/pash_NbFCb8w/tmp5fcmsszz, line 1, foobar, unbound variable	0.168
+test_expand_u,0.002,0.147	
+expand-u-positional.sh, line 2, $1, unbound variable,/tmp/pash_ZwtpYly/tmpee42moli, line 1, $1, unbound variable	
+test_expand_u_positional,0.002,0.133	
+test_quoting,0.003,0.131	
+test_var_assgn_default,0.003,0.154	
+test_exclam,0.002,0.131	
+test_redir_var_test,0.002,0.130	
+test_star,0.002,0.210	
+test_env_vars,0.009,0.155	
+test_redir_dup,0.004,0.141	
+test_IFS,0.002,0.172	
