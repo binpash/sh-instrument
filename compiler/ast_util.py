@@ -1,7 +1,5 @@
 from shasta.ast_node import *
 from shasta.json_to_ast import *
-from config import make_kv
-
 
 ## This class is used by the preprocessor in ast_to_ir
 class PreprocessedAST:
@@ -66,18 +64,6 @@ def char_to_arg_char(char):
     return ["C", ord(char)]
 
 
-def standard_var_ast(string):
-    return make_kv("V", ["Normal", False, string, []])
-
-
-def make_arith(arg):
-    return make_kv("A", arg)
-
-
-def quote_arg(arg):
-    return make_kv("Q", arg)
-
-
 def make_command(arguments, redirections=None, assignments=None):
     redirections = [] if redirections is None else redirections
     assignments = [] if assignments is None else assignments
@@ -88,3 +74,6 @@ def make_command(arguments, redirections=None, assignments=None):
 
 def make_nop():
     return make_command([string_to_argument(":")])
+
+def make_kv(key, val):
+    return [key, val]

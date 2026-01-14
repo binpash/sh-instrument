@@ -93,9 +93,6 @@ def init_log_file():
 ## Utility functions (merged from util.py)
 ##
 
-def flatten_list(lst):
-    return [item for sublist in lst for item in sublist]
-
 
 def unzip(lst):
     res = [[i for i, j in lst], [j for i, j in lst]]
@@ -151,27 +148,3 @@ def ptempfile():
     os.close(fd)
     return name
 
-
-def return_empty_list_if_none_else_itself(
-    arg: Optional[TType],
-) -> Union[TType, List[Any]]:  # list always empty
-    if arg is None:
-        return []
-    else:
-        return arg
-
-
-def return_default_if_none_else_itself(arg: Optional[TType], default: TType) -> TType:
-    if arg is None:
-        return default
-    else:
-        return arg
-
-
-## This function gets a key and a value from the ast json format
-def get_kv(dic):
-    return (dic[0], dic[1])
-
-
-def make_kv(key, val):
-    return [key, val]

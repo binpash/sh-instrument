@@ -6,7 +6,8 @@ from datetime import datetime
 import config
 from config import log, ptempfile, logging_prefix, print_time_delta
 from cli import RunnerParser, PreprocessorParser
-import ast_to_ast
+# import ast_to_ast
+import preprocess_ast_cases
 from parse import parse_shell_to_asts, from_ast_objects_to_shell
 from ast_util import string_to_argument, make_command
 from shasta.json_to_ast import to_ast_node
@@ -125,7 +126,7 @@ def preprocess(input_script_path, args):
 def preprocess_asts(ast_objects, args):
     """Transform AST objects by replacing regions with JIT runtime calls"""
     trans_state = TransformationState()
-    preprocessed_asts = ast_to_ast.replace_ast_regions(ast_objects, trans_state)
+    preprocessed_asts = preprocess_ast_cases.replace_ast_regions(ast_objects, trans_state)
     return preprocessed_asts
 
 
