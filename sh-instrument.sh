@@ -104,4 +104,136 @@ export -f __jit_redir_all_output
 export -f __jit_redir_all_output_always_execute
 
 umask "$old_umask"
-PASH_FROM_SH="sh-instrument.sh" "$PYTHON_VENV" "$PASH_TOP/preprocessor/preprocess.py" "$@"
+
+## Parse arguments to separate preprocessing and execution concerns
+## We need to extract: input script, shell name, script args, and flags
+
+# Initialize variables
+input_script=""
+shell_name="pash"
+script_args=()
+bash_flag=""
+preprocess_only=false
+output_preprocessed=false
+allexport_flag="+a"
+verbose_flag=""
+xtrace_flag=""
+command_mode=""
+command_text=""
+
+# Parse arguments
+i=1
+while [ $i -le $# ]; do
+    arg="${!i}"
+    next_i=$((i+1))
+    next_arg="${!next_i}"
+
+    case "$arg" in
+        -c|--command)
+            command_mode="-c"
+            command_text="$next_arg"
+            i=$next_i
+            ;;
+        --preprocess_only)
+            preprocess_only=true
+            ;;
+        --output_preprocessed)
+            output_preprocessed=true
+            ;;
+        --bash)
+            bash_flag="--bash"
+            ;;
+        -a)
+            allexport_flag="-a"
+            ;;
+        +a)
+            allexport_flag="+a"
+            ;;
+        -v)
+            verbose_flag="-v"
+            ;;
+        -x)
+            xtrace_flag="-x"
+            ;;
+        -d|--debug)
+            # Already handled above, skip
+            i=$next_i
+            ;;
+        --log_file)
+            # Skip log_file argument
+            i=$next_i
+            ;;
+        --version|-t|--time)
+            # Skip these flags
+            ;;
+        *)
+            # This is either the input script or a script argument
+            if [ -z "$input_script" ] && [ -z "$command_mode" ]; then
+                input_script="$arg"
+                shell_name="$arg"
+            else
+                script_args+=("$arg")
+            fi
+            ;;
+    esac
+    i=$((i+1))
+done
+
+# Handle -c command mode
+if [ -n "$command_mode" ]; then
+    # Create temporary file for command text
+    input_script=$(mktemp)
+    echo "$command_text" > "$input_script"
+    # If there are additional args, first becomes shell_name
+    if [ ${#script_args[@]} -gt 0 ]; then
+        shell_name="${script_args[0]}"
+        script_args=("${script_args[@]:1}")
+    fi
+fi
+
+# Create temporary file for preprocessed output
+preprocessed_output=$(mktemp)
+
+# Step 1: Call preprocessor.py to transform the script
+__jit_redir_all_output echo "PaSh: Calling preprocessor..."
+"$PYTHON_VENV" "$PASH_TOP/preprocessor/preprocessor.py" \
+    "$input_script" \
+    --output "$preprocessed_output" \
+    --debug "$PASH_DEBUG_LEVEL" \
+    $bash_flag
+
+preprocessor_exit_code=$?
+
+if [ $preprocessor_exit_code -ne 0 ]; then
+    __jit_redir_all_output echo "PaSh: Preprocessor failed with exit code $preprocessor_exit_code"
+    exit $preprocessor_exit_code
+fi
+
+# If preprocess_only flag was set, just exit
+if [ "$preprocess_only" = true ]; then
+    if [ "$output_preprocessed" = true ]; then
+        cat "$preprocessed_output"
+    fi
+    exit 0
+fi
+
+# Step 2: Call runner.py to execute the preprocessed script
+__jit_redir_all_output echo "PaSh: Calling runner..."
+"$PYTHON_VENV" "$PASH_TOP/preprocessor/runner.py" \
+    "$preprocessed_output" \
+    "$shell_name" \
+    "${script_args[@]}" \
+    $allexport_flag \
+    $verbose_flag \
+    $xtrace_flag \
+    --debug "$PASH_DEBUG_LEVEL"
+
+runner_exit_code=$?
+
+# Clean up temporary files if we created them
+if [ -n "$command_mode" ]; then
+    rm -f "$input_script"
+fi
+rm -f "$preprocessed_output"
+
+exit $runner_exit_code
