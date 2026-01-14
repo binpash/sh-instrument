@@ -47,10 +47,9 @@ class TransformationState:
             script_file.write(text_to_output)
 
         # Create AST node that calls jit.sh
-        # Generates: JIT_INPUT=<file> JIT_SCRIPT_TO_EXECUTE=<file> source jit.sh
+        # Generates: __jit_script_to_execute=<file> source jit.sh
         assignments = [
-            ["JIT_INPUT", string_to_argument(sequential_script_file_name)],
-            ["JIT_SCRIPT_TO_EXECUTE", string_to_argument(sequential_script_file_name)]
+            ["__jit_script_to_execute", string_to_argument(sequential_script_file_name)],
         ]
 
         arguments = [
