@@ -20,7 +20,7 @@ export RUNTIME_DIR="${RUNTIME_DIR:-$PASH_TOP/compiler/orchestrator_runtime}"
 export RUNTIME_LIBRARY_DIR="${RUNTIME_LIBRARY_DIR:-$PASH_TOP/runtime/}"
 
 ## Initialize logging functions
-source "$RUNTIME_DIR/pash_runtime_init.sh"
+source "$RUNTIME_DIR/jit_runtime_init.sh"
 
 ##
 ## (1) Save shell state
@@ -28,13 +28,13 @@ source "$RUNTIME_DIR/pash_runtime_init.sh"
 
 ## First save the state of the shell
 source "$RUNTIME_DIR/save_shell_state.sh"
-## Rename variables to pash specific names (for compatibility with orchestrator scripts)
-export pash_previous_exit_status="$PREVIOUS_SHELL_EC"
-export pash_previous_set_status="$PREVIOUS_SET_STATUS"
+## Save state in JIT-specific variables
+export __jit_previous_exit_status="$PREVIOUS_SHELL_EC"
+export __jit_previous_set_status="$PREVIOUS_SET_STATUS"
 
-pash_redir_output echo "$$: (1) Previous exit status: $pash_previous_exit_status"
-pash_redir_output echo "$$: (1) Previous set state: $pash_previous_set_status"
-pash_redir_output echo "$$: (1) Set state reverted to PaSh-internal set state: $-"
+__jit_redir_output echo "$$: (1) Previous exit status: $__jit_previous_exit_status"
+__jit_redir_output echo "$$: (1) Previous set state: $__jit_previous_set_status"
+__jit_redir_output echo "$$: (1) Set state reverted to JIT-internal set state: $-"
 
 ##
 ## (2) Prepare for sequential execution (no compilation)
@@ -42,10 +42,10 @@ pash_redir_output echo "$$: (1) Set state reverted to PaSh-internal set state: $
 
 ## In runtime-only mode, we always execute the sequential script
 ## No daemon communication, no compilation, no parallel execution
-pash_script_to_execute="${JIT_SCRIPT_TO_EXECUTE:-$JIT_INPUT}"
+__jit_script_to_execute="${JIT_SCRIPT_TO_EXECUTE:-$JIT_INPUT}"
 
-pash_redir_output echo "$$: (2) Runtime-only mode: will execute sequential script"
-pash_redir_output echo "$$: (2) Script to execute: $pash_script_to_execute"
+__jit_redir_output echo "$$: (2) Runtime-only mode: will execute sequential script"
+__jit_redir_output echo "$$: (2) Script to execute: $__jit_script_to_execute"
 
 ## Clean up JIT-specific environment variables immediately after use
 ## This prevents them from leaking into the user's script environment
@@ -59,8 +59,8 @@ unset JIT_INPUT JIT_SCRIPT_TO_EXECUTE
 ##
 
 ## Run the script (always sequential in runtime-only mode)
-export SCRIPT_TO_EXECUTE="$pash_script_to_execute"
-source "$RUNTIME_DIR/pash_restore_state_and_execute.sh"
+export SCRIPT_TO_EXECUTE="$__jit_script_to_execute"
+source "$RUNTIME_DIR/jit_restore_state_and_execute.sh"
 
 ##
 ## (5) Save state after execution
@@ -68,10 +68,10 @@ source "$RUNTIME_DIR/pash_restore_state_and_execute.sh"
 
 ## Save the state after execution
 source "$RUNTIME_DIR/save_shell_state.sh"
-pash_runtime_final_status="$PREVIOUS_SHELL_EC"
-export pash_previous_set_status="$PREVIOUS_SET_STATUS"
+__jit_runtime_final_status="$PREVIOUS_SHELL_EC"
+export __jit_previous_set_status="$PREVIOUS_SET_STATUS"
 
-pash_redir_output echo "$$: (5) Script exited with ec: $pash_runtime_final_status"
+__jit_redir_output echo "$$: (5) Script exited with ec: $__jit_runtime_final_status"
 
 ##
 ## (6) No daemon communication needed
@@ -84,12 +84,12 @@ pash_redir_output echo "$$: (5) Script exited with ec: $pash_runtime_final_statu
 ##
 
 ## Set the shell state before exiting
-pash_redir_output echo "$$: (7) Current PaSh set state: $-"
-source "$RUNTIME_DIR/pash_set_from_to.sh" "$-" "$pash_previous_set_status"
-pash_redir_output echo "$$: (7) Reverted to BaSh set state before exiting: $-"
+__jit_redir_output echo "$$: (7) Current JIT set state: $-"
+source "$RUNTIME_DIR/jit_set_from_to.sh" "$-" "$__jit_previous_set_status"
+__jit_redir_output echo "$$: (7) Reverted to BaSh set state before exiting: $-"
 
 ## Clean up JIT-specific environment variables to prevent leakage
 unset JIT_INPUT JIT_SCRIPT_TO_EXECUTE
 
 ## Set the exit code
-(exit "$pash_runtime_final_status")
+(exit "$__jit_runtime_final_status")
