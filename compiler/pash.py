@@ -6,7 +6,8 @@ import subprocess
 # from ir import *
 from pash_graphviz import maybe_init_graphviz_dir
 from preprocessor.preprocessor import preprocess
-from speculative import util_spec
+# Runtime-only mode: no speculative execution
+# from speculative import util_spec
 from util import *
 import config
 from cli import RunnerParser
@@ -74,12 +75,10 @@ def parse_args():
     args = parser.parse_args()
     config.set_config_globals_from_pash_args(args)
 
-    ## Modify the preprocess mode and the partial order file if we are in speculative mode
+    ## Runtime-only mode: speculative execution not supported
     if args.speculative:
-        log("PaSh is running in speculative mode...")
-        args.__dict__["preprocess_mode"] = "spec"
-        args.__dict__["partial_order_file"] = util_spec.partial_order_file_path()
-        log(" -- Its partial order file will be stored in:", args.partial_order_file)
+        log("ERROR: Speculative mode not supported in runtime-only version!", level=0)
+        sys.exit(1)
 
     ## Initialize the log file
     config.init_log_file()

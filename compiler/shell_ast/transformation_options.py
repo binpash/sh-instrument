@@ -10,11 +10,10 @@ from shasta.json_to_ast import to_ast_node
 from parse import from_ast_objects_to_shell
 
 
-## There are two types of ast_to_ast transformations
+## Runtime-only mode: only PASH transformation supported
 class TransformationType(Enum):
     PASH = "pash"
-    SPECULATIVE = "spec"
-    AIRFLOW = "airflow"
+    # SPECULATIVE and AIRFLOW modes removed - not supported in runtime-only mode
 
 
 class AbstractTransformationState(ABC):
@@ -113,20 +112,8 @@ class TransformationState(AbstractTransformationState):
         return runtime_node
 
 
-## Speculative execution not supported in runtime-only mode
-class SpeculativeTransformationState(AbstractTransformationState):
-    def __init__(self, po_file: str):
-        super().__init__()
-        raise NotImplementedError("Speculative mode not supported in runtime-only version")
-
-    def replace_df_region(
-        self, asts, disable_parallel_pipelines=False, ast_text=None
-    ) -> AstNode:
-        raise NotImplementedError("Speculative mode not supported in runtime-only version")
-
-
-class AirflowTransformationState(TransformationState):
-    pass
+## Runtime-only mode: Speculative and Airflow transformations not supported
+## These classes are removed since they are never instantiated in runtime-only mode
 
 
 def get_shell_from_ast(asts, ast_text=None) -> str:

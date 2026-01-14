@@ -6,7 +6,7 @@ export PASH_TOP=${PASH_TOP:-$(git rev-parse --show-toplevel --show-superproject-
 pash="$PASH_TOP/pa.sh --profile_driven"
 pash_with_bash="$PASH_TOP/pa.sh --profile_driven --bash"
 
-output_dir="$PASH_TOP/evaluation/tests/interface_tests/output"
+output_dir="$PASH_TOP/tests/output"
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
 
