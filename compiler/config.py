@@ -6,7 +6,7 @@ from util import *
 
 
 ## Global
-__version__ = "0.12.2-runtime"  # Runtime-only version
+__version__ = "0.12.2-runtime"
 GIT_TOP_CMD = [
     "git",
     "rev-parse",
@@ -24,7 +24,6 @@ else:
     ).stdout.rstrip()
 
 PYTHON_VERSION = "python3"
-# Runtime-only mode: use jit.sh instead of pash_runtime.sh
 RUNTIME_EXECUTABLE = os.path.join(PASH_TOP, "jit.sh")
 
 ## Ensure that PASH_TMP_PREFIX is set by pa.sh

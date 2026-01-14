@@ -2,11 +2,7 @@ import sys
 import os
 import subprocess
 
-# Runtime-only mode: ir.py not needed (only used for compilation)
-# from ir import *
 from preprocessor.preprocessor import preprocess
-# Runtime-only mode: no speculative execution
-# from speculative import util_spec
 from util import *
 import config
 from cli import RunnerParser

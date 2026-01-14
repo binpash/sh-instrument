@@ -1,19 +1,8 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-# Runtime-only mode: No pickle needed (no IR serialization)
-# import pickle
 
 from shell_ast.ast_util import *
 from shasta.json_to_ast import to_ast_node
-# Runtime-only mode: No speculative execution
-# from speculative import util_spec
 from parse import from_ast_objects_to_shell
-
-
-## Runtime-only mode: only PASH transformation supported
-class TransformationType(Enum):
-    PASH = "pash"
-    # SPECULATIVE and AIRFLOW modes removed - not supported in runtime-only mode
 
 
 class AbstractTransformationState(ABC):
@@ -21,9 +10,6 @@ class AbstractTransformationState(ABC):
         self._node_counter = 0
         self._loop_counter = 0
         self._loop_contexts = []
-
-    def get_mode(self):
-        return TransformationType.PASH
 
     ## Node id related
     def get_next_id(self):
@@ -68,34 +54,25 @@ class AbstractTransformationState(ABC):
         pass
 
 
-## Use this object to pass options inside the preprocessing
-## trasnformation.
 class TransformationState(AbstractTransformationState):
     def replace_df_region(
         self, asts, disable_parallel_pipelines=False, ast_text=None
     ) -> AstNode:
-        # Runtime-only mode: Create ONLY the sequential script file (no IR pickle)
         sequential_script_file_name = ptempfile()
         text_to_output = get_shell_from_ast(asts, ast_text=ast_text)
         with open(sequential_script_file_name, "w", encoding="utf-8") as script_file:
             script_file.write(text_to_output)
 
-        # Call jit.sh instead of pash_runtime.sh
         replaced_node = TransformationState.make_call_to_jit_runtime(
             sequential_script_file_name
         )
 
         return to_ast_node(replaced_node)
 
-    ## This function makes a command that calls jit.sh runtime
-    ## to execute the sequential script with proper shell state management.
-    ##
-    ## Runtime-only mode: No IR file, no compilation, just direct execution.
     @staticmethod
     def make_call_to_jit_runtime(sequential_script_file_name) -> AstNode:
         """
         Creates AST node that calls jit.sh to execute sequential script.
-
         Generates: JIT_INPUT=<file> JIT_SCRIPT_TO_EXECUTE=<file> source jit.sh
         """
         assignments = [
@@ -103,17 +80,12 @@ class TransformationState(AbstractTransformationState):
             ["JIT_SCRIPT_TO_EXECUTE", string_to_argument(sequential_script_file_name)]
         ]
 
-        # Path to jit.sh (uses RUNTIME_EXECUTABLE from config)
         arguments = [
             string_to_argument("source"),
             string_to_argument(config.RUNTIME_EXECUTABLE),
         ]
         runtime_node = make_command(arguments, assignments=assignments)
         return runtime_node
-
-
-## Runtime-only mode: Speculative and Airflow transformations not supported
-## These classes are removed since they are never instantiated in runtime-only mode
 
 
 def get_shell_from_ast(asts, ast_text=None) -> str:

@@ -1,12 +1,13 @@
-# Runtime-only mode: inline loop variable name functions
+from shasta.ast_node import *
+from shasta.json_to_ast import *
+from util import *
+
+
 def loop_iters_var() -> str:
     return "pash_loop_iters"
 
 def loop_iter_var(loop_id: int) -> str:
     return f"pash_loop_{loop_id}_iter"
-from shasta.ast_node import *
-from shasta.json_to_ast import *
-from util import *
 
 
 ## This class is used by the preprocessor in ast_to_ir

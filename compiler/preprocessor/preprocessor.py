@@ -5,9 +5,6 @@ import config
 from shell_ast import transformation_options, ast_to_ast
 from parse import parse_shell_to_asts, from_ast_objects_to_shell
 from util import *
-# Runtime-only mode: no server communication, no speculative execution
-# import server_util
-# from speculative import util_spec
 from cli import PreprocessorParser
 
 LOGGING_PREFIX = "PaSh Preprocessor: "
@@ -50,13 +47,8 @@ def preprocess(input_script_path, args):
 
 
 def preprocess_asts(ast_objects, args):
-    ## Runtime-only mode: always use standard TransformationState
-    ## Speculative and Airflow modes are not supported
     trans_options = transformation_options.TransformationState()
-
-    ## Preprocess ASTs by replacing AST regions with calls to the runtime (jit.sh).
     preprocessed_asts = ast_to_ast.replace_ast_regions(ast_objects, trans_options)
-
     return preprocessed_asts
 
 
